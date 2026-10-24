@@ -4,6 +4,7 @@
 GitHub 保存代码和提交历史，Vercel 从 GitHub 自动构建并托管网站，Cloudflare 管理域名 DNS。
 
 - 网站域名：`https://summer.spring-smart.com`
+- GitHub 仓库：`https://github.com/ZMRWEGO/summer`
 - Vercel 项目：`xuanyutianji`
 - 生产分支：`main`
 
@@ -37,7 +38,7 @@ npm run build
 
 ```sh
 npm run build
-git add index.html src public package.json package-lock.json vite.config.js vercel.json DEPLOYMENT.md .gitignore .vercelignore
+git add index.html src public package.json package-lock.json vite.config.js vercel.json README.md DEPLOYMENT.md .gitignore .vercelignore
 git commit -m "描述本次修改"
 git push origin main
 ```
