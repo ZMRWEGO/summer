@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#6f9fc9" />
+  <title>Kimi K3.1 Pro — 悬于天际</title>
+  <style>
+    :root{--ink:#181b1c;--blue:#2944c7;--glass:rgba(247,248,245,.88);--sky-top:#6e9fca;--sky-mid:#a9c9df;--sky-bottom:#dbe7e9;--glow:rgba(255,255,255,.55)}
+    *{box-sizing:border-box}html{scroll-behavior:smooth;scrollbar-color:rgba(40,55,65,.45) transparent;scrollbar-width:thin}
+    body{margin:0;min-height:500vh;overflow-x:hidden;color:var(--ink);font-family:"PingFang SC","Microsoft YaHei","Noto Sans CJK SC",Arial,sans-serif;background:var(--sky-mid)}
+    button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid rgba(41,68,199,.5);outline-offset:4px}
+    #sky{position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse at 76% 9%,var(--glow) 0%,transparent 48%),linear-gradient(180deg,var(--sky-top) 0%,var(--sky-mid) 56%,var(--sky-bottom) 100%);transition:background-color .2s}
+    #scene{position:fixed;inset:0;z-index:0;touch-action:pan-y}#scene canvas{display:block;width:100%;height:100%;outline:none}
+    #grain{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E")}
+    .brand{position:fixed;left:28px;top:24px;z-index:5;color:#f8faf8;font-size:18px;font-weight:400;letter-spacing:-.25px;text-shadow:0 1px 8px rgba(20,40,55,.16)}
+    .brand strong{font-weight:700}.counter{position:fixed;right:30px;top:27px;z-index:5;color:#f8faf8;font:13px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:2px;text-shadow:0 1px 8px rgba(20,40,55,.16)}
+    .music-toggle{position:fixed;right:27px;top:54px;z-index:7;display:flex;align-items:center;gap:8px;min-height:36px;padding:8px 12px;border:1px solid rgba(255,255,255,.38);border-radius:999px;background:rgba(255,255,255,.14);color:#f8faf8;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);font:10px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.08em;text-shadow:0 1px 7px rgba(20,40,55,.2);transition:background .18s,transform .18s}.music-toggle:hover{background:rgba(255,255,255,.25);transform:translateY(-1px)}.music-toggle:active{transform:translateY(1px)}.music-toggle svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}.music-toggle.playing .sound-bar{animation:soundBars .8s ease-in-out infinite alternate;transform-origin:center}.music-toggle.playing .sound-bar:nth-child(2){animation-delay:-.35s}@keyframes soundBars{to{transform:scaleY(.45)}}
+    .orientation-toggle{display:none;top:98px}.orientation-toast{position:fixed;left:50%;bottom:104px;transform:translate(-50%,8px);z-index:12;width:max-content;max-width:calc(100vw - 40px);padding:11px 16px;border-radius:12px;background:rgba(248,249,246,.94);color:#252a2c;font-size:13px;line-height:1.5;box-shadow:0 10px 30px rgba(30,45,55,.14);opacity:0;pointer-events:none;transition:opacity .2s,transform .2s}.orientation-toast.visible{opacity:1;transform:translate(-50%,0)}
+    @media(max-width:900px) and (pointer:coarse){.orientation-toggle{display:flex}}
+    .pager{position:fixed;right:26px;top:50%;transform:translateY(-50%);z-index:6;display:flex;flex-direction:column;gap:13px}
+    .pager button{width:24px;height:24px;border:0;background:transparent;padding:5px;border-radius:50%;position:relative}
+    .pager button::after{content:"";display:block;width:10px;height:10px;border:1.5px solid rgba(255,255,255,.85);border-radius:50%;transition:transform .2s,background .2s}
+    .pager button:hover::after{transform:scale(1.25)}.pager button.active::after{background:#fff;transform:scale(1.12)}
+    .dock{position:fixed;left:50%;bottom:25px;transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:10px;padding:10px 12px 10px 20px;border:1px solid rgba(255,255,255,.75);border-radius:999px;background:rgba(248,250,248,.86);box-shadow:0 12px 38px rgba(36,54,64,.13),inset 0 1px 0 #fff;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);white-space:nowrap}
+    .dock label{font-size:11px;font-weight:700;letter-spacing:.08em;margin-right:2px}.wind-wrap{display:flex;align-items:center;gap:13px}
+    input[type=range]{-webkit-appearance:none;appearance:none;width:154px;height:22px;background:transparent;cursor:pointer}
+    input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:8px;background:linear-gradient(to right,var(--blue) 0 var(--fill,0%),rgba(38,48,55,.14) var(--fill,0%) 100%)}
+    input[type=range]::-moz-range-track{height:4px;border-radius:8px;background:rgba(38,48,55,.14)}input[type=range]::-moz-range-progress{height:4px;background:var(--blue)}
+    input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:17px;height:17px;margin-top:-6.5px;border-radius:50%;background:#f7f9f7;border:2px solid var(--blue);box-shadow:0 1px 4px rgba(30,50,70,.2)}
+    input[type=range]::-moz-range-thumb{width:14px;height:14px;border-radius:50%;background:#f7f9f7;border:2px solid var(--blue)}
+    #windValue{min-width:88px;font:12px ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:700}.divider{width:1px;height:26px;background:rgba(30,40,45,.12);margin:0 2px}
+    .dock button{border:0;border-radius:999px;padding:11px 17px;background:rgba(40,48,52,.075);color:#252a2c;font-size:11px;font-weight:700;letter-spacing:.03em;transition:transform .18s,background .18s,color .18s}
+    .dock button:hover{background:rgba(40,48,52,.13);transform:translateY(-1px)}.dock button:active{transform:translateY(1px)}.dock button.primary{background:var(--blue);color:#fff}.dock button.primary:hover{background:#2037ad}.dock button.gusting{background:#172b91}
+    .card{position:fixed;z-index:4;width:350px;padding:25px 26px 23px;border:1px solid rgba(255,255,255,.65);border-radius:17px;background:rgba(248,249,246,.83);box-shadow:0 16px 44px rgba(38,52,65,.1);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);opacity:0;pointer-events:none;transform:translateY(12px) scale(.97);transition:opacity .22s ease-out,transform .22s ease-out}
+    .card.visible{opacity:1;transform:translateY(0) scale(1)}.card .eyebrow{display:block;color:var(--blue);font:12px ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.16em;margin-bottom:12px}.card h2{font-size:26px;line-height:1.15;letter-spacing:-.6px;margin:0 0 10px}.card p{font-size:15px;line-height:1.55;color:#555c5e;margin:0}.card kbd{font:12px ui-monospace,monospace;border:1px solid rgba(40,45,50,.16);border-radius:4px;padding:1px 5px;background:rgba(255,255,255,.5)}
+    #card1{left:7%;top:3%}#card2{right:7%;bottom:17%}#card3{left:7%;bottom:17%}#card4{right:7%;bottom:17%}
+    #cursorRing{position:fixed;left:0;top:0;width:32px;height:32px;border:1px solid rgba(25,35,38,.6);border-radius:50%;z-index:20;pointer-events:none;opacity:0;transform:translate(-50%,-50%);transition:width .15s,height .15s,opacity .15s,background .15s;mix-blend-mode:multiply}
+    #cursorRing::after{content:"";position:absolute;left:50%;top:50%;width:4px;height:4px;border:1px solid currentColor;border-radius:50%;transform:translate(-50%,-50%)}
+    #cursorRing.grab{width:46px;height:46px;background:rgba(255,255,255,.18)}
+    #loading{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:linear-gradient(#77a6cd,#d7e5e9);transition:opacity .35s;pointer-events:none}#loading.done{opacity:0}.loader-sheet{width:180px;height:120px;background:#e8e6df;box-shadow:0 20px 50px rgba(40,60,70,.14);display:grid;place-items:center;font-weight:700;animation:breathe 1.4s ease-in-out infinite alternate}@keyframes breathe{to{transform:skewY(-2deg) translateY(-5px)}}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    @media(max-width:700px){.brand{left:18px;top:20px;font-size:15px}.counter{right:18px;top:22px;font-size:11px}.pager{right:10px;gap:8px}.dock{bottom:max(12px,env(safe-area-inset-bottom));width:calc(100% - 24px);max-width:480px;padding:10px;gap:5px;justify-content:center}.dock label{display:none}.wind-wrap{gap:5px}input[type=range]{width:78px}#windValue{min-width:66px;font-size:9px}.dock button{padding:11px 10px;font-size:9px}.divider{margin:0}.card{width:min(310px,calc(100vw - 64px));padding:20px}.card h2{font-size:22px}.card p{font-size:14px}#card1{left:18px;top:65px}#card2,#card4{right:38px;bottom:120px}#card3{left:18px;bottom:120px}#hint{bottom:95px;font-size:9px}#cursorRing{display:none}}
+    @media(max-width:700px){.music-toggle{right:15px;top:48px;min-height:34px;padding:7px 9px;font-size:8px;gap:5px}.orientation-toggle{top:90px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.card,.dock button,#loading{transition:none}.loader-sheet,.music-toggle.playing .sound-bar{animation:none}}
+  </style>
+</head>
+<body>
+  <div id="sky" aria-hidden="true"></div>
+  <div id="scene" aria-label="交互式三维布料。拖拽布面、点击衣夹，或使用底部风力控制。"></div>
+  <div id="grain" aria-hidden="true"></div>
+  <header class="brand"><strong>Kimi K3.1 Pro</strong> · 由 Kimi 呈现</header>
+  <div class="counter"><span id="pageNow">01</span> / 05</div>
+  <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false" aria-label="播放夏日背景音乐">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 11.5V3l7-1.5V10"/><ellipse cx="3.8" cy="12" rx="2.2" ry="1.8"/><ellipse cx="10.8" cy="10.5" rx="2.2" ry="1.8"/><path class="sound-bar" d="M14.5 5v2M1 5v2"/></svg>
+    <span id="musicLabel">开启配乐</span>
+  </button>
+  <audio id="bgm" src="/audio/千与千寻主题曲.mp3" loop preload="auto"></audio>
+  <button class="music-toggle orientation-toggle" id="orientationToggle" type="button" aria-pressed="false" aria-label="切换为横屏">
+    <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="4.5" width="12" height="7" rx="1.5"/><path d="M5 2.5 3 4.5l2 2M11 13.5l2-2-2-2"/></svg>
+    <span id="orientationLabel">横屏</span>
+  </button>
+  <div class="orientation-toast" id="orientationToast" role="status" aria-live="polite"></div>
+  <nav class="pager" aria-label="场景章节">
+    <button class="active" data-page="0" aria-label="第一章：悬于天际" aria-current="step"></button>
+    <button data-page="1" aria-label="第二章：实时布料"></button>
+    <button data-page="2" aria-label="第三章：抓一抓"></button>
+    <button data-page="3" aria-label="第四章：代码织成"></button>
+    <button data-page="4" aria-label="第五章：金色时刻"></button>
+  </nav>
+  <aside class="card" id="card1" aria-hidden="true"><span class="eyebrow">01 — 实时布料</span><h2>每个数字都在变化。</h2><p>布面上的数据直接来自正在运行的物理模拟：风速、帧率、阵风次数，以及纤维被拉伸的程度。</p></aside>
+  <aside class="card" id="card2" aria-hidden="true"><span class="eyebrow">02 — 抓一抓</span><h2>轻轻拉动布料。</h2><p>按住布面任意位置即可抓握和拉伸。点击衣夹可以让它脱钩，点击<kbd>重置</kbd>即可重新夹回。</p></aside>
+  <aside class="card" id="card3" aria-hidden="true"><span class="eyebrow">03 — 代码织成</span><h2>没有视频，没有图片。</h2><p>1,749 个粒子由约一万组弹簧连接，每秒求解 60 次。绳索、衣夹和云朵也都实时绘制。</p></aside>
+  <aside class="card" id="card4" aria-hidden="true"><span class="eyebrow">04 — 金色时刻</span><h2>滚动，让太阳移动。</h2><p>镜头和光线会跟随滚动变化。在底部调节风力，或按<kbd>空格</kbd>唤起一阵风。</p></aside>
+  <div class="dock" role="group" aria-label="布料控制">
+    <div class="wind-wrap"><label for="wind">风力</label><input id="wind" type="range" min="0" max="24" value="0" step="0.1" aria-label="风速，单位为米每秒"/><output id="windValue" for="wind">0.0 米/秒</output></div>
+    <span class="divider" aria-hidden="true"></span>
+    <button class="primary" id="gust" type="button">阵风</button>
+    <button id="pause" type="button" aria-pressed="false">暂停</button>
+    <button id="reset" type="button">重置</button>
+  </div>
+  <div id="cursorRing" aria-hidden="true"></div>
+  <div id="loading" aria-hidden="true"><div class="loader-sheet">Kimi K3.1 Pro</div></div>
+  <main class="sr-only"><h1>Kimi K3.1 Pro — 一块实时渲染的布</h1><p>交互式布料实验，包含风力、阵风、布面拖拽、可脱钩衣夹和五个滚动镜头。</p></main>
+  <script type="module" src="./src/scene.js"></script>
+</body>
+</html>
